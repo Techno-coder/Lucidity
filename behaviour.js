@@ -75,22 +75,22 @@ var set_notify = (new /** @class */ (function () {
         var _this = this;
         this.POLL_INTERVAL_SECONDS = 1;
         this.REMINDER_INTERVAL_SECONDS = 3600;
-        this.remaining = 0;
         this.set_notify = function (enabled) {
             if (enabled) {
                 _this.timeout = window.setInterval(_this.check_notify, _this.POLL_INTERVAL_SECONDS * 1000);
+                _this.start = Date.now();
             }
             else {
                 window.clearInterval(_this.timeout);
             }
         };
         this.check_notify = function () {
-            _this.remaining -= _this.POLL_INTERVAL_SECONDS;
-            if (_this.remaining <= 0) {
-                _this.remaining = _this.REMINDER_INTERVAL_SECONDS;
+            var elapsed = (Date.now() - _this.start) / 1000;
+            if (elapsed >= _this.REMINDER_INTERVAL_SECONDS) {
+                _this.start = Date.now();
                 _this.on_notify();
             }
-            _this.draw();
+            _this.draw(elapsed);
         };
         this.on_notify = function () {
             next_phrase();
@@ -98,11 +98,11 @@ var set_notify = (new /** @class */ (function () {
                 body: "Are you dreaming right now?",
             });
         };
-        this.draw = function () {
-            var minutes = Math.floor(_this.remaining / 60);
-            var seconds = _this.remaining % 60;
+        this.draw = function (elapsed) {
+            var minutes = Math.floor(elapsed / 60);
+            var seconds = elapsed % 60;
             document.getElementById("time_remaining").innerHTML = minutes + " minutes " + seconds + " seconds";
-            var percentage = String(100 - ((_this.remaining / _this.REMINDER_INTERVAL_SECONDS) * 100));
+            var percentage = String((elapsed / _this.REMINDER_INTERVAL_SECONDS) * 100);
             var style_string = "width: " + percentage + "%";
             document.getElementById("remaining_progress").setAttribute("style", style_string);
         };

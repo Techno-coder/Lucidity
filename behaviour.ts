@@ -85,25 +85,26 @@ const {set_notify} = new class {
     readonly REMINDER_INTERVAL_SECONDS = 3600;
 
     timeout;
-    remaining = 0;
+    start;
 
     set_notify = (enabled) => {
         if (enabled) {
             this.timeout = window.setInterval(this.check_notify, this.POLL_INTERVAL_SECONDS * 1000);
+            this.start = Date.now();
         } else {
             window.clearInterval(this.timeout);
         }
     };
 
     check_notify = () => {
-        this.remaining -= this.POLL_INTERVAL_SECONDS;
+        let elapsed = (Date.now() - this.start) / 1000;
 
-        if (this.remaining <= 0) {
-            this.remaining = this.REMINDER_INTERVAL_SECONDS;
+        if (elapsed >= this.REMINDER_INTERVAL_SECONDS) {
+            this.start = Date.now();
             this.on_notify();
         }
 
-        this.draw();
+        this.draw(elapsed);
     };
 
     on_notify = () => {
@@ -113,12 +114,12 @@ const {set_notify} = new class {
         });
     };
 
-    draw = () => {
-        let minutes = Math.floor(this.remaining / 60);
-        let seconds = this.remaining % 60;
+    draw = (elapsed) => {
+        let minutes = Math.floor(elapsed / 60);
+        let seconds = elapsed % 60;
         document.getElementById("time_remaining").innerHTML = `${minutes} minutes ${seconds} seconds`;
 
-        let percentage = String(100 - ((this.remaining / this.REMINDER_INTERVAL_SECONDS) * 100));
+        let percentage = String((elapsed / this.REMINDER_INTERVAL_SECONDS) * 100);
         let style_string = `width: ${percentage}%`;
         document.getElementById("remaining_progress").setAttribute("style", style_string);
     };
