@@ -67,6 +67,7 @@ function next_math() {
 
 function on_notify_switch() {
     let switch_on = document.getElementById("notify_switch").checked;
+    let allowed = false;
     if (switch_on) {
         Notification.requestPermission(result => {
             if (result == "denied" || result == "default") {
@@ -74,30 +75,38 @@ function on_notify_switch() {
                     html: "Allow notifications to receive reality check reminders",
                     classes: "grey lighten-4 grey-text text-darken-4"
                 })
+            } else {
+                allowed = true;
             }
         });
     }
-    set_notify(switch_on);
+    set_notify(switch_on && allowed);
 }
 
 const {set_notify} = new class {
     readonly POLL_INTERVAL_SECONDS = 1;
     readonly REMINDER_INTERVAL_SECONDS = 3600;
 
-    timeout;
+    interval;
     start;
+    pause_elapsed;
 
     set_notify = (enabled) => {
         if (enabled) {
-            this.timeout = window.setInterval(this.check_notify, this.POLL_INTERVAL_SECONDS * 1000);
-            this.start = Date.now();
+            if (this.start == null) {
+                this.start = Date.now();
+            } else {
+                this.start = Date.now() - this.pause_elapsed;
+            }
+            this.interval = window.setInterval(this.check_notify, this.POLL_INTERVAL_SECONDS * 1000);
         } else {
-            window.clearInterval(this.timeout);
+            this.pause_elapsed = Date.now() - this.start;
+            window.clearInterval(this.interval);
         }
     };
 
     check_notify = () => {
-        let elapsed = (Date.now() - this.start) / 1000;
+        let elapsed = Math.round((Date.now() - this.start) / 1000);
 
         if (elapsed >= this.REMINDER_INTERVAL_SECONDS) {
             this.start = Date.now();
@@ -109,14 +118,16 @@ const {set_notify} = new class {
 
     on_notify = () => {
         next_phrase();
+        next_math();
         new Notification("Reality Check", {
             body: "Are you dreaming right now?",
         });
     };
 
     draw = (elapsed) => {
-        let minutes = Math.floor(elapsed / 60);
-        let seconds = elapsed % 60;
+        let remaining = this.REMINDER_INTERVAL_SECONDS - elapsed;
+        let minutes = Math.floor(remaining / 60);
+        let seconds = remaining % 60;
         document.getElementById("time_remaining").innerHTML = `${minutes} minutes ${seconds} seconds`;
 
         let percentage = String((elapsed / this.REMINDER_INTERVAL_SECONDS) * 100);

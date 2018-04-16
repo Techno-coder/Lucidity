@@ -58,6 +58,7 @@ function next_math() {
 }
 function on_notify_switch() {
     var switch_on = document.getElementById("notify_switch").checked;
+    var allowed = false;
     if (switch_on) {
         Notification.requestPermission(function (result) {
             if (result == "denied" || result == "default") {
@@ -66,9 +67,12 @@ function on_notify_switch() {
                     classes: "grey lighten-4 grey-text text-darken-4"
                 });
             }
+            else {
+                allowed = true;
+            }
         });
     }
-    set_notify(switch_on);
+    set_notify(switch_on && allowed);
 }
 var set_notify = (new /** @class */ (function () {
     function class_1() {
@@ -77,15 +81,21 @@ var set_notify = (new /** @class */ (function () {
         this.REMINDER_INTERVAL_SECONDS = 3600;
         this.set_notify = function (enabled) {
             if (enabled) {
-                _this.timeout = window.setInterval(_this.check_notify, _this.POLL_INTERVAL_SECONDS * 1000);
-                _this.start = Date.now();
+                if (_this.start == null) {
+                    _this.start = Date.now();
+                }
+                else {
+                    _this.start = Date.now() - _this.pause_elapsed;
+                }
+                _this.interval = window.setInterval(_this.check_notify, _this.POLL_INTERVAL_SECONDS * 1000);
             }
             else {
-                window.clearInterval(_this.timeout);
+                _this.pause_elapsed = Date.now() - _this.start;
+                window.clearInterval(_this.interval);
             }
         };
         this.check_notify = function () {
-            var elapsed = (Date.now() - _this.start) / 1000;
+            var elapsed = Math.round((Date.now() - _this.start) / 1000);
             if (elapsed >= _this.REMINDER_INTERVAL_SECONDS) {
                 _this.start = Date.now();
                 _this.on_notify();
@@ -94,13 +104,15 @@ var set_notify = (new /** @class */ (function () {
         };
         this.on_notify = function () {
             next_phrase();
+            next_math();
             new Notification("Reality Check", {
                 body: "Are you dreaming right now?",
             });
         };
         this.draw = function (elapsed) {
-            var minutes = Math.floor(elapsed / 60);
-            var seconds = elapsed % 60;
+            var remaining = _this.REMINDER_INTERVAL_SECONDS - elapsed;
+            var minutes = Math.floor(remaining / 60);
+            var seconds = remaining % 60;
             document.getElementById("time_remaining").innerHTML = minutes + " minutes " + seconds + " seconds";
             var percentage = String((elapsed / _this.REMINDER_INTERVAL_SECONDS) * 100);
             var style_string = "width: " + percentage + "%";
