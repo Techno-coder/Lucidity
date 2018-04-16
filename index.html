@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Lucidity</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+	<link rel="stylesheet" href="theme.css">
+</head>
+<body>
+<div class="container">
+	<div class="card blue-grey darken-3">
+		<div class="card-content white-text flow-text" id="phrase">Those trees look like a triple deluxe pizza</div>
+		<div class="card-action">
+			<button class="waves-effect waves-light btn green" onclick="success()">The text changed</button>
+			<button class="waves-effect waves-light btn red darken-1" onclick="failure()">Same text</button>
+			<button class="waves-effect waves-light btn blue-grey darken-1" onclick="next_phrase()">Another phrase
+			</button>
+		</div>
+	</div>
+
+	<div class="card blue-grey darken-3">
+		<div class="card-content white-text flow-text">Push a finger through the center of your palm</div>
+		<div class="card-action">
+			<button class="waves-effect waves-light btn green" onclick="success()">It went through</button>
+			<button class="waves-effect waves-light btn red darken-1" onclick="failure()">It did not</button>
+		</div>
+	</div>
+
+	<div class="card blue-grey darken-3">
+		<div class="card-content white-text flow-text">
+			Add these two numbers:
+			<span id="number_a">3</span>
+			+
+			<span id="number_b">4</span>
+		</div>
+		<div class="card-action">
+			<div class="row">
+				<div class="input-field col s2">
+					<input id="number_result" type="text" class="validate white-text">
+					<label for="number_result">Result</label>
+				</div>
+				<div class="input-field col s10">
+					<button class="waves-effect waves-light btn green" onclick="check_math()">Check</button>
+					<button class="waves-effect waves-light btn blue-grey darken-1" onclick="next_math()">
+						Another question
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card blue-grey darken-3">
+		<div class="card-content white-text">
+			<span class="card-title">Notifications</span>
+			Remaining: <span id="time_remaining">Not started</span>
+			<div class="progress">
+				<div class="determinate" id="remaining_progress" style="width: 00%"></div>
+			</div>
+		</div>
+		<div class="card-action">
+			<div class="switch white-text">
+				<label>
+					Off
+					<input type="checkbox" onclick="on_notify_switch()" id="notify_switch">
+					<span class="lever"></span>
+					On
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div id="success" class="modal">
+		<div class="modal-content">
+			<h4>You're dreaming!</h4>
+			<p>Well done!</p>
+		</div>
+		<div class="modal-footer">
+			<button class="modal-action modal-close waves-effect waves-green btn-flat">Sweet</button>
+		</div>
+	</div>
+
+	<div id="failure" class="modal">
+		<div class="modal-content">
+			<h4>Keep trying!</h4>
+			<p>You'll get there eventually!</p>
+		</div>
+		<div class="modal-footer">
+			<button class="modal-action modal-close waves-effect waves-red btn-flat">Okay</button>
+		</div>
+	</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script src="behaviour.js"></script>
+</body>
+</html>
