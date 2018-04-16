@@ -52,6 +52,7 @@ function check_math() {
     } else {
         success();
     }
+    document.getElementById("number_result").value = "";
 }
 
 function next_math() {

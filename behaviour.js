@@ -47,6 +47,7 @@ function check_math() {
     else {
         success();
     }
+    document.getElementById("number_result").value = "";
 }
 function next_math() {
     var a = String(random_int(10));
@@ -107,5 +108,3 @@ var set_notify = (new /** @class */ (function () {
     }
     return class_1;
 }())).set_notify;
-;
-;
