@@ -17,10 +17,13 @@ const COOL_PHRASES = [
 document.addEventListener('DOMContentLoaded', () => {
     next_phrase();
     next_math();
+
     let modals = document.getElementsByClassName("modal");
     for (let i = 0; i < modals.length; i++) {
         new M.Modal(modals[i]);
     }
+
+    window.onbeforeunload = () => true;
 });
 
 function success() {

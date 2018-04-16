@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     for (var i = 0; i < modals.length; i++) {
         new M.Modal(modals[i]);
     }
+    window.onbeforeunload = function () { return true; };
 });
 function success() {
     var element = document.getElementById("success");
