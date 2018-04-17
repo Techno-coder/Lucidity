@@ -12,6 +12,15 @@ const COOL_PHRASES = [
     "Make him the magical girl he always wanted to be",
     "I don't have to draw gay windows",
     "A person can only take so many vines",
+    "Girl look how orange you freaking look girl",
+    "Crap, all the crackers fell out",
+    "A giant freaking moth just entered my room",
+    "Holy crap, it was massive",
+    "It sounds like a yapping duck",
+    "Crap, my banana just fell",
+    "I'm exotic like a lamborghini",
+    "Said the man who legally changed their name to 'Sexy Vegan'",
+    "On a related note, so much freaking earwax",
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
